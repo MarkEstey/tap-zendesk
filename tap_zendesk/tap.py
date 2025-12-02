@@ -8,7 +8,10 @@ class TapZendesk(Tap):
     config_jsonschema = PropertiesList(
         Property('url_base', StringType, default='https://zendesk.com', description='Base url for the Zendesk API'),
         Property('email', StringType, required=True, description='Email address used to log in'),
-        Property('api_token', StringType, secret=True, required=True, description='API token for the user'),
+        Property('api_token', StringType, secret=True, description='API token for the user'),
+        Property('client_id', StringType, description='OAuth client ID'),
+        Property('client_secret', StringType, secret=True, description='OAuth client secret'),
+        Property('incremental_request_rate', IntegerType, default=10, description='Maximum number of incremental requests per minute (see: https://developer.zendesk.com/api-reference/introduction/rate-limits/#endpoint-rate-limits)'),
         Property('start_date', DateTimeType, default='2015-06-01T00:00:00Z', description='The earliest record date to sync'),
         Property(
             'stream_type_conformance',
@@ -25,8 +28,11 @@ class TapZendesk(Tap):
 
     def discover_streams(self):
         return [
+            ConversationLogStream(self),
             CustomObjectRecordsStream(self),
             CustomObjectsStream(self),
+            TicketMetricEventsStream(self),
+            TicketsStream(self),
         ]
 
 if __name__ == '__main__':
