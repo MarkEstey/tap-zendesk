@@ -1,9 +1,9 @@
-from tap_zendesk.client import ZendeskIncrementalCursorStream
+from tap_zendesk.client import ZendeskIncrementalTimeStream
 from singer_sdk.typing import *
 
 # API Reference: https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_metric_events/#list-ticket-metric-events
 
-class TicketMetricEventsStream(ZendeskIncrementalCursorStream):
+class TicketMetricEventsStream(ZendeskIncrementalTimeStream):
     name = 'ticket_metric_events'
     path = '/api/v2/incremental/ticket_metric_events'
     records_jsonpath = '$.ticket_metric_events[*]'
