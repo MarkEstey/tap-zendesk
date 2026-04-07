@@ -51,6 +51,9 @@ class ZendeskCursorPaginator(BaseAPIPaginator):
     def has_more(self, response):
         return response.json()['meta']['has_more']
 
+    def continue_if_empty(self, response):
+        return self.has_more(response)
+
 class ZendeskCursorStream(ZendeskStream):
     def get_new_paginator(self):
         return ZendeskCursorPaginator()
@@ -67,6 +70,9 @@ class ZendeskOffsetPaginator(BasePageNumberPaginator):
 
     def has_more(self, response):
         return response.json().get('next_page') is not None
+
+    def continue_if_empty(self, response):
+        return self.has_more(response)
 
 class ZendeskOffsetStream(ZendeskStream):
     def get_new_paginator(self):
@@ -87,6 +93,9 @@ class ZendeskIncrementalTimePaginator(BaseAPIPaginator):
 
     def has_more(self, response):
         return not response.json()['end_of_stream']
+
+    def continue_if_empty(self, response):
+        return self.has_more(response)
 
 class ZendeskIncrementalTimeStream(ZendeskStream):
     def get_new_paginator(self):
@@ -131,6 +140,9 @@ class ZendeskIncrementalCursorPaginator(BaseAPIPaginator):
             return response['meta']['has_more']
 
         return False
+
+    def continue_if_empty(self, response):
+        return self.has_more(response)
 
 class ZendeskIncrementalCursorStream(ZendeskStream):
     def get_new_paginator(self):
