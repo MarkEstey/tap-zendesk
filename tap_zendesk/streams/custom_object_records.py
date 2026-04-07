@@ -7,8 +7,8 @@ from singer_sdk.typing import *
 class CustomObjectRecordsStream(ZendeskIncrementalCursorStream):
     name = 'custom_object_records'
     path = '/api/v2/incremental/custom_objects/{custom_object_key}/cursor'
-    records_jsonpath = '$.custom_object_records[*]'
     parent_stream_type = CustomObjectsStream
+    records_jsonpath = '$.custom_object_records[*]'
     primary_keys = ['id']
     replication_key = 'updated_at'
 

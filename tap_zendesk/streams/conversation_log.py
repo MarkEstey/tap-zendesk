@@ -7,9 +7,10 @@ from singer_sdk.typing import *
 class ConversationLogStream(ZendeskCursorStream):
     name = 'conversation_log'
     path = '/api/v2/tickets/{ticket_id}/conversation_log'
+    parent_stream_type = TicketsStream
+    state_partitioning_keys = []
     records_jsonpath = '$.events[*]'
     primary_keys = ['id']
-    parent_stream_type = TicketsStream
 
     schema = PropertiesList(
         Property('attachments', ArrayType(ObjectType()), description="A collection of attachments (image or file) associated with the event"),

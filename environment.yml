@@ -7,4 +7,4 @@ dependencies:
   - pip
   - pip:
     - meltano
-    - singer-sdk==0.49.*
+    - singer-sdk==0.53.*
