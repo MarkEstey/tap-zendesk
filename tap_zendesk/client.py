@@ -2,23 +2,11 @@ import time
 from datetime import datetime
 from requests.auth import HTTPBasicAuth
 
-from singer_sdk.authenticators import OAuthAuthenticator
-from singer_sdk.helpers._typing import TypeConformanceLevel
-from singer_sdk.pagination import BaseAPIPaginator, BasePageNumberPaginator
+from singer_sdk.helpers.conform import TypeConformanceLevel
+from singer_sdk.pagination import BaseAPIPaginator, PageNumberPaginator
 from singer_sdk.streams import RESTStream
 
 # Base API documentation: https://developer.zendesk.com/api-reference
-
-class ZendeskOAuthAuthenticator(OAuthAuthenticator):
-    @property
-    def oauth_request_body(self):
-        return {
-            'grant_type': 'client_credentials',
-            'client_id': self.client_id,
-            'client_secret': self.client_secret,
-            'redirect_uri': '',
-            'scope': 'read',
-        }
 
 class ZendeskStream(RESTStream):
     def __init__(self, *args, **kwargs):
@@ -38,8 +26,6 @@ class ZendeskStream(RESTStream):
     def authenticator(self):
         if self.config['api_token']:
             return HTTPBasicAuth(username=self.config['email'] + '/token', password=self.config['api_token'])
-        elif self.config['client_id']:
-            return ZendeskOAuthAuthenticator(client_id=self.config['client_id'], client_secret=self.config['client_secret'])
 
 class ZendeskCursorPaginator(BaseAPIPaginator):
     def __init__(self):
@@ -64,7 +50,7 @@ class ZendeskCursorStream(ZendeskStream):
         else:
             return {'page[size]': 100}
 
-class ZendeskOffsetPaginator(BasePageNumberPaginator):
+class ZendeskOffsetPaginator(PageNumberPaginator):
     def __init__(self):
         super().__init__(start_value=1)
 
@@ -152,8 +138,16 @@ class ZendeskIncrementalCursorStream(ZendeskStream):
         if next_page_token is not None:
             return {'cursor': next_page_token}
 
+        elif type(self.get_starting_replication_key_value(context)) == int:
+            return {'start_time': self.get_starting_replication_key_value(context) }
+
+        elif type(self.get_starting_replication_key_value(context)) == str:
+            timestamp = int(datetime.fromisoformat(self.get_starting_replication_key_value(context)).timestamp())
+            return {'start_time': timestamp }
+
         else:
-            return {'start_time': int(self.get_starting_timestamp(context).timestamp())}
+            return {'start_time': 0 }
+
 
     def parse_response(self, response):
         limit = 60 / self.config['incremental_request_rate']

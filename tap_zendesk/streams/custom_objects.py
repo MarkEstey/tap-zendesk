@@ -10,6 +10,7 @@ class CustomObjectsStream(ZendeskOffsetStream):
     primary_keys = ['key']
 
     schema = PropertiesList(
+        Property('allows_attachments', BooleanType, description="If true, file attachments can be added to the object's records. If false, new attachments can't be added to the object's records, but existing attachments on records can still be viewed and downloaded"),
         Property('allows_photos', BooleanType, description="If true, photos can be uploaded to the records of the object. If false, new photos cannot be uploaded but existing photos can still be viewed and removed"),
         Property('created_at', DateTimeType, description="The time the object type was created"),
         Property('created_by_user_id', StringType, description="Id of a user who created the object"),

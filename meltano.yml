@@ -11,7 +11,7 @@ plugins:
     namespace: tap_zendesk
     pip_url: -e .
     repo: https://github.com/MarkEstey/tap-zendesk
-    maintenance_status: development
+    maintenance_status: active
     capabilities:
     - state
     - catalog
@@ -22,6 +22,7 @@ plugins:
     - { name: url_base, kind: string }
     - { name: email, kind: string }
     - { name: api_token, kind: string, sensitive: true }
+    - { name: incremental_request_rate, kind: integer }
     - { name: start_date, kind: date_iso8601 }
     - { name: stream_type_conformance, kind: string }
     - { name: stream_maps, kind: object }
