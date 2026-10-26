@@ -6,7 +6,7 @@ from singer_sdk.typing import *
 
 class TicketsStream(ZendeskIncrementalCursorStream):
     name = 'tickets'
-    path = '/api/v2/incremental/tickets'
+    path = '/api/v2/incremental/tickets/cursor'
     records_jsonpath = '$.tickets[*]'
     primary_keys = ['id']
     replication_key = 'generated_timestamp'

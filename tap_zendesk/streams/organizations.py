@@ -1,10 +1,10 @@
-from tap_zendesk.client import ZendeskIncrementalCursorStream
+from tap_zendesk.client import ZendeskIncrementalTimeStream
 from singer_sdk.typing import *
 
 # API Reference: https://developer.zendesk.com/api-reference/ticketing/organizations/organizations
 # Incremental Documentation: https://developer.zendesk.com/api-reference/ticketing/ticket-management/incremental_exports/#incremental-organization-export
 
-class OrganizationsStream(ZendeskIncrementalCursorStream):
+class OrganizationsStream(ZendeskIncrementalTimeStream):
     name = 'organizations'
     path = '/api/v2/incremental/organizations'
     records_jsonpath = '$.organizations[*]'

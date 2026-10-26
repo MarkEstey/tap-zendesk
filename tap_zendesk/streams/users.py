@@ -6,7 +6,7 @@ from singer_sdk.typing import *
 
 class UsersStream(ZendeskIncrementalCursorStream):
     name = 'users'
-    path = '/api/v2/incremental/users'
+    path = '/api/v2/incremental/users/cursor'
     records_jsonpath = '$.users[*]'
     primary_keys = ['id']
     replication_key = 'updated_at'

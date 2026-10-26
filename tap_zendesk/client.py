@@ -148,7 +148,6 @@ class ZendeskIncrementalCursorStream(ZendeskStream):
         else:
             return {'start_time': 0 }
 
-
     def parse_response(self, response):
         limit = 60 / self.config['incremental_request_rate']
         delay = limit - response.elapsed.total_seconds()
