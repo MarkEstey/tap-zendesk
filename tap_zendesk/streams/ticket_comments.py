@@ -13,6 +13,7 @@ class TicketCommentsStream(ZendeskCursorStream):
     primary_keys = ['id']
 
     schema = PropertiesList(
+        Property('ticket_id', IntegerType, description="Parent ticket id"),
         Property('attachments', ArrayType(ObjectType()), description="Attachments, if any. See Attachment"),
         Property('audit_id', IntegerType, description="The id of the ticket audit record. See Show Audit"),
         Property('author_id', IntegerType, description="The id of the comment author. If null or omitted on create, defaults to the authenticated user. See Author id"),
@@ -26,3 +27,6 @@ class TicketCommentsStream(ZendeskCursorStream):
         Property('type', StringType, description="Comment or VoiceComment. The JSON object for adding voice comments to tickets is different. See Adding voice comments to tickets"),
         Property('via', ObjectType(), description="Describes how the object was created. See the Via object reference"),
     ).to_dict()
+
+    def post_process(self, row, context):
+        return super().post_process(row, context) | {'ticket_id': context['ticket_id']}

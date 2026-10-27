@@ -13,6 +13,7 @@ class ConversationLogStream(ZendeskCursorStream):
     primary_keys = ['id']
 
     schema = PropertiesList(
+        Property('ticket_id', IntegerType, description="Parent ticket id"),
         Property('attachments', ArrayType(ObjectType()), description="A collection of attachments (image or file) associated with the event"),
         Property('author', ObjectType(), description="Object that describes the user who created the event"),
         Property('content', ObjectType(), description="Object that describes the content of the message. The inner fields depends on the record type"),
@@ -22,3 +23,6 @@ class ConversationLogStream(ZendeskCursorStream):
         Property('reference', StringType, description="A Zendesk resource name value that uniquely identifies this record. Example: zen:ticket_event:<id>"),
         Property('type', StringType, description="The type of record, representing one of the conversational ticket events. Examples: Comment or Messaging::ConversationMessage"),
     ).to_dict()
+
+    def post_process(self, row, context):
+        return super().post_process(row, context) | {'ticket_id': context['ticket_id']}
