@@ -8,10 +8,12 @@ class CustomObjectFieldsStream(ZendeskCursorStream):
     name = 'custom_object_fields'
     path = '/api/v2/custom_objects/{custom_object_key}/fields'
     parent_stream_type = CustomObjectsStream
+    state_partitioning_keys = []
     records_jsonpath = '$.custom_object_fields[*]'
     primary_keys = ['id']
 
     schema = PropertiesList(
+        Property('custom_object_key', StringType, description="Parent conversation key"),
         Property('active', BooleanType, description="If true, this field is available for use"),
         Property('created_at', DateTimeType, description="The time the field was created"),
         Property('custom_field_options', ArrayType(ObjectType()), description="Required and presented for a custom field of type \"dropdown\". Each option is represented by an object with a name and value property"),
@@ -34,3 +36,6 @@ class CustomObjectFieldsStream(ZendeskCursorStream):
         Property('updated_at', DateTimeType, description="The time of the last update of the field"),
         Property('url', StringType, description="The URL for this resource"),
     ).to_dict()
+
+    def post_process(self, row, context):
+        return super().post_process(row, context) | {'custom_object_key': context['custom_object_key']}

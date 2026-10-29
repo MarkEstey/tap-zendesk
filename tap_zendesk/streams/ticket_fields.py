@@ -3,7 +3,7 @@ from singer_sdk.typing import *
 
 # API Reference: https://developer.zendesk.com/api-reference/ticketing/tickets/ticket_fields
 
-class TicketFormsStream(ZendeskCursorStream):
+class TicketFieldsStream(ZendeskCursorStream):
     name = 'ticket_fields'
     path = '/api/v2/ticket_fields'
     records_jsonpath = '$.ticket_fields[*]'
@@ -19,7 +19,7 @@ class TicketFormsStream(ZendeskCursorStream):
         Property('creator_app_name', StringType, description="Name of the app that created the ticket field, or a null value if no app created the ticket field"),
         Property('creator_user_id', IntegerType, description="The id of the user that created the ticket field, or a value of \"-1\" if an app created the ticket field"),
         Property('custom_field_options', ArrayType(ObjectType()), description="Required and presented for a custom ticket field of type \"multiselect\" or \"tagger\""),
-        Property('custom_statuses', ArrayType(StringType), description="List of customized ticket statuses. Only present for a system ticket field of type \"custom_status\""),
+        Property('custom_statuses', ArrayType(ObjectType()), description="List of customized ticket statuses. Only present for a system ticket field of type \"custom_status\""),
         Property('description', StringType, description="Describes the purpose of the ticket field to users"),
         Property('editable_in_portal', BooleanType, description="Whether this field is editable by end users in Help Center"),
         Property('id', IntegerType, required=True, description="Automatically assigned when created"),
@@ -36,7 +36,7 @@ class TicketFormsStream(ZendeskCursorStream):
         Property('required', BooleanType, description="If true, agents must enter a value in the field to change the ticket status to solved"),
         Property('required_in_portal', BooleanType, description="If true, end users must enter a value in the field to create the request"),
         Property('sub_type_id', IntegerType, description="For system ticket fields of type \"priority\" and \"status\". Defaults to 0. A \"priority\" sub type of 1 removes the \"Low\" and \"Urgent\" options. A \"status\" sub type of 1 adds the \"On-Hold\" option"),
-        Property('system_field_options', ArrayType(StringType), description="Presented for a system ticket field of type \"tickettype\", \"priority\" or \"status\""),
+        Property('system_field_options', ArrayType(ObjectType()), description="Presented for a system ticket field of type \"tickettype\", \"priority\" or \"status\""),
         Property('tag', StringType, description="For \"checkbox\" fields only. A tag added to tickets when the checkbox field is selected"),
         Property('title', StringType, description="The title of the ticket field"),
         Property('title_in_portal', StringType, description="The title of the ticket field for end users in Help Center"),
